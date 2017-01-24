@@ -2,6 +2,8 @@ var express = require('express');
 var app = express();
 var http = require('http');
 
+app.set('port', (process.env.PORT || 5000));
+
 
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
@@ -55,4 +57,6 @@ function postSIA(response) {
     post_req.end();
 }
 
-app.listen(80);
+app.listen(app.get('port'), function() {
+  console.log('Node app is running on port', app.get('port'));
+});

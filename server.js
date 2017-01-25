@@ -7,6 +7,10 @@ app.use(bodyParser.json());
 
 app.set('port', (process.env.PORT || 80));
 
+app.get('/buscador/JSON-RPC', function(req, res, next) {
+  res.jsonp({ error: 'nope :(' });
+});
+
 app.post('/buscador/JSON-RPC', function(req, res, next) {
   fetchSIA(JSON.stringify(req.body.query), req.body.host, (json, err) => {
     res.header("Access-Control-Allow-Origin", "*");

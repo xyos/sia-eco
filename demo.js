@@ -14,7 +14,7 @@ var query = JSON.stringify({
   ]}
 });
 
-fetch(`http://localhost/buscador/JSON-RPC`, { 
+fetch(`http://nodos.herokuapp.com/buscador/JSON-RPC`, { 
   method: 'POST',
   headers: {
     'Content-Type': 'application/json'

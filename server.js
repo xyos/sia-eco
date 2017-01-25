@@ -1,60 +1,27 @@
 var express = require('express');
+var bodyParser = require('body-parser');
+var fetch = require('node-fetch')
 var app = express();
-var http = require('http');
+
+app.use(bodyParser.json());
 
 app.set('port', (process.env.PORT || 80));
 
-
-// app.use(function(req, res, next) {
-//   res.header("Access-Control-Allow-Origin", "*");
-//   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-//   next();
-// });
-
-app.get('/', function(req, res, next) {
-  postSIA(res);
+app.post('/buscador/JSON-RPC', function(req, res, next) {
+  fetchSIA(JSON.stringify(req.body.query), req.body.host, (json, err) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    if (!err) {
+      res.jsonp(json);
+    } else {
+      res.jsonp({ error: err });
+    }
+  });
 });
 
-app.post('/', function(req, res, next) {
- // Handle the post for this route
-});
-
-function postSIA(response) {
-
-    var post_data = JSON.stringify({ method: 'buscador.obtenerAsignaturas', params: [
-          '',
-          'PRE',
-          'p',
-          'PRE',
-          '2509',
-          '',
-          1,
-          3
-        ] });
-    // An object of options to indicate where to post to
-    var post_options = {
-        host: 'sia.bogota.unal.edu.co',
-        port: '80',
-        path: '/buscador/JSON-RPC',
-        method: 'POST',
-        headers: {
-            'Content-Type': 'text/plain;charset=UTF-8',
-            'Content-Length': Buffer.byteLength(post_data)
-        }
-    };
-
-    // Set up the request
-    var post_req = http.request(post_options, function(res) {
-        res.setEncoding('utf8');
-        res.on('data', function (chunk) {
-          console.log(chunk);
-            response.jsonp(JSON.parse(chunk));
-        });
-    });
-
-    // post the data
-    post_req.write(post_data);
-    post_req.end();
+function fetchSIA(query, host, callback) {
+  fetch(`http://${host}/buscador/JSON-RPC`, { method: 'POST', body: query }).then(res => {
+    res.json().then(json => callback(json, null)).catch(err => callback(null, err));
+  }).catch(err => callback(null, err));
 }
 
 app.listen(app.get('port'), function() {

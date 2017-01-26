@@ -2,19 +2,19 @@ var fetch = require('node-fetch')
 
 var query = JSON.stringify({
   host: 'sia.bogota.unal.edu.co',
-  query: { method: 'buscador.obtenerAsignaturas', params: [
+  query: `{ method: 'buscador.obtenerAsignaturas', params: [
     '',
-    'PRE',
-    'p',
-    'PRE',
-    '2509',
+    '',
+    '',
+    '',
+    'foto',
     '',
     1,
     3
-  ]}
+  ]}`
 });
 
-fetch(`http://nodos.herokuapp.com/buscador/JSON-RPC`, { 
+fetch(`http://localhost/eco`, { 
   method: 'POST',
   headers: {
     'Content-Type': 'application/json'

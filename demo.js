@@ -1,6 +1,7 @@
 var fetch = require('node-fetch')
 
 var query = JSON.stringify({
+  id: 'giacostaj',
   host: 'sia.bogota.unal.edu.co',
   query: `{ method: 'buscador.obtenerAsignaturas', params: [
     '',
@@ -14,7 +15,7 @@ var query = JSON.stringify({
   ]}`
 });
 
-fetch(`http://localhost/eco`, { 
+fetch(`http://nodos.herokuapp.com/eco`, { 
   method: 'POST',
   headers: {
     'Content-Type': 'application/json'

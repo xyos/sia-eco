@@ -37,10 +37,10 @@ app.post('/eco', (req, res, next) => {
   fetchSIA(req.body.query, req.body.host, (json, err) => {
     if (!err) {
       res.jsonp(json);
-      console.log(`REQUEST[${count++}][${req.connection.remoteAddress}][${req.body.host}]: OK`);
+      console.log(`SIA-REQUEST ${count++} ${req.body.id} ${req.body.host} OK`);
     } else {
       res.jsonp({ error: err });
-      console.log(`REQUEST[${count++}][${req.connection.remoteAddress}][${req.body.host}]: `, err);
+      console.log(`SIA-REQUEST ${count++} ${req.body.id} ${req.body.host} `, err);
     }
   });
 });

@@ -10,6 +10,19 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const fetch = require('node-fetch');
+const firebase = require('firebase-admin');
+
+firebase.initializeApp({
+  credential: firebase.credential.cert({
+    projectId: 'nodos-92480',
+    clientEmail: 'firebase-adminsdk-rjeve@nodos-92480.iam.gserviceaccount.com',
+    privateKey: `-----BEGIN PRIVATE KEY-----\n${process.env.DB_KEY}\n-----END PRIVATE KEY-----\n`
+  }),
+  databaseURL: 'https://nodos-92480.firebaseio.com/'
+});
+
+const database = firebase.database();
+const session = database.ref('sia-eco/').child('session');
 
 let count = 0; /* Count requests */
 
@@ -47,4 +60,11 @@ app.post('/eco', (req, res) => {
 
 app.listen(app.get('port'), () => {
   console.log('SIA Eco is running on port', app.get('port'));
+});
+
+process.on('exit', () => {
+  session.push({
+    date: new Date(),
+    requests_count: count
+  });
 });

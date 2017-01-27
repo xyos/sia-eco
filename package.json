@@ -14,5 +14,9 @@
     "express": "4.14.0",
     "node-fetch": "^1.6.3"
   },
+  "devDependencies": {
+    "eslint": "^3.5.0",
+    "eslint-config-gio": "^1.2.1"
+  },
   "license": "MIT"
 }

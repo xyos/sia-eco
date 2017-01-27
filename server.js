@@ -18,24 +18,24 @@ const fetchSIA = (query, host, callback) => {
   fetch(`http://${host}/buscador/JSON-RPC`, { method: 'POST', body: query }).then(res => {
     res.json().then(json => callback(json, null)).catch(err => callback(null, err));
   }).catch(err => callback(null, err));
-}
+};
 
 /* ================= Express Server ================= */
 const app = express();
 
 app.use(bodyParser.json());
-app.set('port', (process.env.PORT || 80));
+app.set('port', process.env.PORT || 80);
 
 // Handle HTTP request and return JSONP with contact
-app.get('*', (req, res, next) => {
+app.get('*', (req, res) => {
   res.jsonp({ contact: 'giacostaj@unal.edu.co' });
 });
 
 // Handle POST in url ".../eco" and then request with the POST query
-app.post('/eco', (req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*"); /* Disable CORS */
+app.post('/eco', (req, res) => {
+  res.header('Access-Control-Allow-Origin', '*'); /* Disable CORS */
   fetchSIA(req.body.query, req.body.host, (json, err) => {
-    if (!err) {
+    if (err === null) {
       res.jsonp(json);
       console.log(`SIA-REQUEST ${count++} ${req.body.id} ${req.body.host} OK`);
     } else {
@@ -45,6 +45,6 @@ app.post('/eco', (req, res, next) => {
   });
 });
 
-app.listen(app.get('port'), function() {
+app.listen(app.get('port'), () => {
   console.log('SIA Eco is running on port', app.get('port'));
 });

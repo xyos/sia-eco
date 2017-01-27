@@ -12,6 +12,9 @@ const bodyParser = require('body-parser');
 const fetch = require('node-fetch');
 const firebase = require('firebase-admin');
 
+/* Date Now as YYYY-MM-DD */
+const date = `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`
+
 /* eslint max-len: 0 */
 firebase.initializeApp({
   credential: firebase.credential.cert({
@@ -24,9 +27,7 @@ firebase.initializeApp({
 /* eslint max-len: 0 */
 
 const database = firebase.database();
-const session = database.ref('sia-eco/').child('session');
-
-let count = 0; /* Count requests */
+const session = database.ref('sia-eco/').child(date);
 
 /* ================= Request SIA API ================= */
 const fetchSIA = (query, host, callback) => {
@@ -52,21 +53,24 @@ app.post('/eco', (req, res) => {
   fetchSIA(req.body.query, req.body.host, (json, err) => {
     if (err === null) {
       res.jsonp(json);
-      console.log(`SIA-REQUEST ${count++} ${req.body.id} ${req.body.host} OK`);
+      console.log(`SIA-REQUEST[${req.body.id}][${req.body.host}] OK`);
+      session.push({
+        id: req.body.id,
+        host: req.body.host,
+        state: 'OK'
+      });
     } else {
       res.jsonp({ error: err });
-      console.log(`SIA-REQUEST ${count++} ${req.body.id} ${req.body.host} `, err);
+      console.log(`SIA-REQUEST[${req.body.id}][${req.body.host}] `, err);
+      session.push({
+        id: req.body.id,
+        host: req.body.host,
+        state: 'ERROR'
+      });
     }
   });
 });
 
 app.listen(app.get('port'), () => {
   console.log('SIA Eco is running on port', app.get('port'));
-});
-
-process.on('exit', () => {
-  session.push({
-    date: new Date(),
-    requests_count: count
-  });
 });

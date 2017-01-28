@@ -15,7 +15,7 @@ var query = JSON.stringify({
   ]}`
 });
 
-fetch(`http://nodos.herokuapp.com/`, {
+fetch(`http://sia-eco.herokuapp.com/`, {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json'

@@ -13,7 +13,7 @@ const fetch = require('node-fetch');
 const firebase = require('firebase-admin');
 
 /* Date Now as YYYY-MM-DD */
-const date = `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`
+const date = `${new Date().getFullYear()}/${new Date().getMonth() + 1}/${new Date().getDate()}`;
 
 /* eslint max-len: 0 */
 firebase.initializeApp({
@@ -27,7 +27,6 @@ firebase.initializeApp({
 /* eslint max-len: 0 */
 
 const database = firebase.database();
-const session = database.ref('sia-eco/').child(date);
 
 /* ================= Request SIA API ================= */
 const fetchSIA = (query, host, callback) => {
@@ -44,29 +43,23 @@ app.set('port', process.env.PORT || 80);
 
 // Handle HTTP request and return JSONP with contact
 app.get('*', (req, res) => {
-  res.jsonp({ contact: 'giacostaj@unal.edu.co' });
+  res.redirect('https://gioacostax.github.io/');
 });
 
 // Handle POST in url ".../eco" and then request with the POST query
 app.post('/eco', (req, res) => {
   res.header('Access-Control-Allow-Origin', '*'); /* Disable CORS */
   fetchSIA(req.body.query, req.body.host, (json, err) => {
+    const session = database.ref(`sia-eco/${date}/${req.body.id}`);
+
+    session.transaction(current => (current || 0) + 1);
+
     if (err === null) {
       res.jsonp(json);
       console.log(`SIA-REQUEST[${req.body.id}][${req.body.host}] OK`);
-      session.push({
-        id: req.body.id,
-        host: req.body.host,
-        state: 'OK'
-      });
     } else {
       res.jsonp({ error: err });
       console.log(`SIA-REQUEST[${req.body.id}][${req.body.host}] `, err);
-      session.push({
-        id: req.body.id,
-        host: req.body.host,
-        state: 'ERROR'
-      });
     }
   });
 });

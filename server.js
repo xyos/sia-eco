@@ -50,6 +50,9 @@ app.get('*', (req, res) => {
 // Handle POST in url ".../eco" and then request with the POST query
 app.post('/', (req, res) => {
   res.header('Access-Control-Allow-Origin', '*'); /* Disable CORS */
+  res.header('Access-Control-Allow-Methods', 'POST');
+  res.header('Access-Control-Allow-Headers', 'content-type');
+
   fetchSIA(req.body.query, req.body.host, (json, err) => {
     const session = database.ref(`requests/${date}/${req.body.id}`);
 

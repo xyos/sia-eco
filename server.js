@@ -40,6 +40,11 @@ const fetchSIA = (query, host, callback) => {
 const app = express();
 
 app.use(bodyParser.json());
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  next();
+});
 app.set('port', process.env.PORT || 80);
 
 // Handle HTTP request and return JSONP with contact
@@ -49,10 +54,6 @@ app.get('*', (req, res) => {
 
 // Handle POST in url ".../eco" and then request with the POST query
 app.post('/', (req, res) => {
-  res.header('Access-Control-Allow-Origin', '*'); /* Disable CORS */
-  res.header('Access-Control-Allow-Methods', 'POST');
-  res.header('Access-Control-Allow-Headers', 'content-type');
-
   fetchSIA(req.body.query, req.body.host, (json, err) => {
     const session = database.ref(`requests/${date}/${req.body.id}`);
 

@@ -2,20 +2,20 @@ var fetch = require('node-fetch')
 
 var query = JSON.stringify({
   id: 'giacostaj',
-  host: 'sia.bogota.unal.edu.co',
+  host: 'https://siaman.unal.edu.co',
   query: `{ method: 'buscador.obtenerAsignaturas', params: [
     '',
     '',
     '',
     '',
-    'foto',
+    'taller',
     '',
     1,
     3
   ]}`
 });
 
-fetch(`http://sia-eco.herokuapp.com/`, {
+fetch(`http://localhost/`, {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json'

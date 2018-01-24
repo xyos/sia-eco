@@ -11,6 +11,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const fetch = require('node-fetch');
 const firebase = require('firebase-admin');
+const https = require("https");
 
 /* Date Now as YYYY-MM-DD */
 const date = `${new Date().getFullYear()}/${new Date().getMonth() + 1}/${new Date().getDate()}`;
@@ -28,10 +29,16 @@ firebase.initializeApp({
 
 const database = firebase.database();
 
+/* Avoid SSL */
+
+const agent = new https.Agent({
+  rejectUnauthorized: false
+})
+
 // TODO: Parse errors to be clearest in logs
 /* ================= Request SIA API ================= */
 const fetchSIA = (query, host, callback) => {
-  fetch(`${host}/buscador/JSON-RPC`, { method: 'POST', body: query }).then(res => {
+  fetch(`${host}/buscador/JSON-RPC`, { agent, method: 'POST', body: query }).then(res => {
     res.json().then(json => callback(json, null)).catch(err => callback(null, err));
   }).catch(err => callback(null, err));
 };

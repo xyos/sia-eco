@@ -2,7 +2,7 @@ var fetch = require('node-fetch')
 
 var query = JSON.stringify({
   id: 'giacostaj',
-  host: 'https://siaman.unal.edu.co',
+  host: 'https://siabog1.unal.edu.co',
   query: `{ method: 'buscador.obtenerAsignaturas', params: [
     '',
     '',

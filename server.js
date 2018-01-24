@@ -38,9 +38,15 @@ const agent = new https.Agent({
 // TODO: Parse errors to be clearest in logs
 /* ================= Request SIA API ================= */
 const fetchSIA = (query, host, callback) => {
-  fetch(`${host}/buscador/JSON-RPC`, { agent, method: 'POST', body: query }).then(res => {
-    res.json().then(json => callback(json, null)).catch(err => callback(null, err));
-  }).catch(err => callback(null, err));
+  if (host.substring(0, 5) === 'https') {
+    fetch(`${host}/buscador/JSON-RPC`, { agent, method: 'POST', body: query }).then(res => {
+      res.json().then(json => callback(json, null)).catch(err => callback(null, err));
+    }).catch(err => callback(null, err));
+  } else {
+    fetch(`${host}/buscador/JSON-RPC`, { method: 'POST', body: query }).then(res => {
+      res.json().then(json => callback(json, null)).catch(err => callback(null, err));
+    }).catch(err => callback(null, err));
+  }
 };
 
 /* ================= Express Server ================= */

@@ -1,17 +1,17 @@
 /**
- * SIA Eco
+ * SIA-ECO
  *
- * Copyright © 2015-2017 gioacostax. All rights reserved.
+ * Copyright © 2015-2018 gioacostax. All rights reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-const express = require('express');
-const bodyParser = require('body-parser');
-const fetch = require('node-fetch');
-const firebase = require('firebase-admin');
-const https = require("https");
+const express     = require('express');
+const bodyParser  = require('body-parser');
+const fetch       = require('node-fetch');
+const firebase    = require('firebase-admin');
+const https       = require('https');
 
 /* Date Now as YYYY-MM-DD */
 const date = `${new Date().getFullYear()}/${new Date().getMonth() + 1}/${new Date().getDate()}`;
@@ -30,23 +30,20 @@ firebase.initializeApp({
 const database = firebase.database();
 
 /* Avoid SSL */
-
 const agent = new https.Agent({
   rejectUnauthorized: false
-})
+});
 
 // TODO: Parse errors to be clearest in logs
 /* ================= Request SIA API ================= */
 const fetchSIA = (query, host, callback) => {
-  if (host.substring(0, 5) === 'https') {
-    fetch(`${host}/buscador/JSON-RPC`, { agent, method: 'POST', body: query }).then(res => {
-      res.json().then(json => callback(json, null)).catch(err => callback(null, err));
-    }).catch(err => callback(null, err));
-  } else {
-    fetch(`${host}/buscador/JSON-RPC`, { method: 'POST', body: query }).then(res => {
-      res.json().then(json => callback(json, null)).catch(err => callback(null, err));
-    }).catch(err => callback(null, err));
-  }
+  fetch(host, {
+    agent: host.substring(0, 5) === 'https' ? agent : false,
+    method: 'POST',
+    body: query
+  }).then(res => {
+    res.json().then(json => callback(json, null)).catch(err => callback(null, err));
+  }).catch(err => callback(null, err));
 };
 
 /* ================= Express Server ================= */
@@ -62,7 +59,7 @@ app.set('port', process.env.PORT || 80);
 
 // Handle HTTP request and return JSONP with contact
 app.get('*', (req, res) => {
-  res.redirect('https://gioacostax.github.io/');
+  res.redirect('https://gioacostax.github.io/prometeo/');
 });
 
 // Handle POST in url ".../eco" and then request with the POST query
@@ -83,5 +80,5 @@ app.post('/', (req, res) => {
 });
 
 app.listen(app.get('port'), () => {
-  console.log('SIA Eco is running on port', app.get('port'));
+  console.log('SIA-ECO is running on port', app.get('port'));
 });

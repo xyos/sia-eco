@@ -3,6 +3,7 @@
 
   "rules": {
     "arrow-body-style": 0,
-    "no-console": 0
+    "no-console": 0,
+    "no-multi-spaces": 0
   }
 }
